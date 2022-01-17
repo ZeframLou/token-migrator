@@ -4,7 +4,7 @@ pragma solidity ^0.8.11;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
 
-import {ERC20Migrateable} from "./interfaces/ERC20Migrateable.sol";
+import {IERC20Migrateable} from "./interfaces/IERC20Migrateable.sol";
 
 /// @title TokenMigrator
 /// @author zefram.eth
@@ -46,7 +46,7 @@ contract TokenMigrator {
 
     /// @notice The new token that's being migrated to
     /// @return _newToken The new token that's being migrated to
-    function newToken() public pure returns (ERC20Migrateable _newToken) {
+    function newToken() public pure returns (IERC20Migrateable _newToken) {
         uint256 offset = _getImmutableVariablesOffset();
         assembly {
             _newToken := shr(0x60, calldataload(add(offset, 0x14)))

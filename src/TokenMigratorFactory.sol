@@ -5,7 +5,7 @@ import {ERC20} from "solmate/tokens/ERC20.sol";
 
 import {TokenMigrator} from "./TokenMigrator.sol";
 import {ClonesWithCallData} from "./lib/ClonesWithCallData.sol";
-import {ERC20Migrateable} from "./interfaces/ERC20Migrateable.sol";
+import {IERC20Migrateable} from "./interfaces/IERC20Migrateable.sol";
 
 /// @title TokenMigratorFactory
 /// @author zefram.eth
@@ -39,7 +39,7 @@ contract TokenMigratorFactory {
     /// @return The created TokenMigrator contract
     function createTokenMigrator(
         ERC20 oldToken,
-        ERC20Migrateable newToken,
+        IERC20Migrateable newToken,
         uint64 unlockTimestamp
     ) external returns (TokenMigrator) {
         bytes memory ptr;
