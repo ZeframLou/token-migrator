@@ -17,9 +17,9 @@ contract TestERC20Migrateable is ERC20("", "", 18), IERC20Migrateable {
     {
         // we don't do auth checks for msg.sender but we should in prod
 
-        _mint(recipient, oldTokenAmount);
-
         // 1:10000 migration
-        return oldTokenAmount * 10000;
+        newTokenAmount = oldTokenAmount * 10000;
+
+        _mint(recipient, newTokenAmount);
     }
 }
