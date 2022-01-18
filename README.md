@@ -10,6 +10,12 @@ The new ERC20 token MUST implement the [IERC20Migrateable](src/interfaces/IERC20
 
 This project uses [Foundry](https://github.com/gakonst/foundry) as the development framework.
 
+### Dependencies
+
+```
+make update
+```
+
 ### Compilation
 
 ```
