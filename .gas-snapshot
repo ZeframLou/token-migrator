@@ -1,0 +1,7 @@
+testCorrectness_createTokenMigrator(uint64) (runs: 256, μ: 59006, ~: 59007)
+testGas_createTokenMigrator_hasUnlock() (gas: 55588)
+testGas_createTokenMigrator_noUnlock() (gas: 53933)
+testCorrectness_migrate(uint240) (runs: 256, μ: 103545, ~: 103547)
+testCorrectness_unlock(uint240) (runs: 256, μ: 110496, ~: 110498)
+testGas_migrate_hasUnlock() (gas: 96575)
+testGas_migrate_noUnlock() (gas: 96607)
