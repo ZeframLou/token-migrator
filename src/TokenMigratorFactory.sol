@@ -18,6 +18,12 @@ contract TokenMigratorFactory {
     using ClonesWithCallData for address;
 
     /// -----------------------------------------------------------------------
+    /// Events
+    /// -----------------------------------------------------------------------
+
+    event CreateTokenMigrator(TokenMigrator migrator);
+
+    /// -----------------------------------------------------------------------
     /// Immutable parameters
     /// -----------------------------------------------------------------------
 
@@ -36,12 +42,12 @@ contract TokenMigratorFactory {
     /// @param unlockTimestamp The timestamp after which the locked old tokens
     /// can be redeemed. Set to 0 if the locked old tokens should
     /// never be unlocked.
-    /// @return The created TokenMigrator contract
+    /// @return migrator The created TokenMigrator contract
     function createTokenMigrator(
         ERC20 oldToken,
         IERC20Migrateable newToken,
         uint64 unlockTimestamp
-    ) external returns (TokenMigrator) {
+    ) external returns (TokenMigrator migrator) {
         bytes memory ptr;
         if (unlockTimestamp > 0) {
             ptr = new bytes(48);
@@ -58,9 +64,9 @@ contract TokenMigratorFactory {
             }
         }
 
-        return
-            TokenMigrator(
-                address(implementation).cloneWithCallDataProvision(ptr)
-            );
+        migrator = TokenMigrator(
+            address(implementation).cloneWithCallDataProvision(ptr)
+        );
+        emit CreateTokenMigrator(migrator);
     }
 }
