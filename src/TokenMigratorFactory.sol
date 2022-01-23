@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.11;
 
+import {ClonesWithImmutableArgs} from "@clones/ClonesWithImmutableArgs.sol";
+
 import {ERC20} from "solmate/tokens/ERC20.sol";
 
 import {TokenMigrator} from "./TokenMigrator.sol";
-import {ClonesWithCallData} from "./lib/ClonesWithCallData.sol";
 import {IERC20Migrateable} from "./interfaces/IERC20Migrateable.sol";
 
 /// @title TokenMigratorFactory
@@ -15,7 +16,7 @@ contract TokenMigratorFactory {
     /// Library usage
     /// -----------------------------------------------------------------------
 
-    using ClonesWithCallData for address;
+    using ClonesWithImmutableArgs for address;
 
     /// -----------------------------------------------------------------------
     /// Events
@@ -48,25 +49,14 @@ contract TokenMigratorFactory {
         IERC20Migrateable newToken,
         uint64 unlockTimestamp
     ) external returns (TokenMigrator migrator) {
-        bytes memory ptr;
+        bytes memory data;
         if (unlockTimestamp > 0) {
-            ptr = new bytes(48);
-            assembly {
-                mstore(add(ptr, 0x20), shl(0x60, oldToken))
-                mstore(add(ptr, 0x34), shl(0x60, newToken))
-                mstore(add(ptr, 0x48), shl(0xc0, unlockTimestamp))
-            }
+            data = abi.encodePacked(oldToken, newToken, unlockTimestamp);
         } else {
-            ptr = new bytes(40);
-            assembly {
-                mstore(add(ptr, 0x20), shl(0x60, oldToken))
-                mstore(add(ptr, 0x34), shl(0x60, newToken))
-            }
+            data = abi.encodePacked(oldToken, newToken);
         }
 
-        migrator = TokenMigrator(
-            address(implementation).cloneWithCallDataProvision(ptr)
-        );
+        migrator = TokenMigrator(address(implementation).clone(data));
         emit CreateTokenMigrator(migrator);
     }
 }

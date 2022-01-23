@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.11;
 
+import {Clone} from "@clones/Clone.sol";
+
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
 
@@ -9,7 +11,7 @@ import {IERC20Migrateable} from "./interfaces/IERC20Migrateable.sol";
 /// @title TokenMigrator
 /// @author zefram.eth
 /// @notice Used for migrating from an existing ERC20 token to a new ERC20 token
-contract TokenMigrator {
+contract TokenMigrator is Clone {
     /// -----------------------------------------------------------------------
     /// Library usage
     /// -----------------------------------------------------------------------
@@ -38,19 +40,13 @@ contract TokenMigrator {
     /// @notice The old token that's being phased out
     /// @return _oldToken The old token that's being phased out
     function oldToken() public pure returns (ERC20 _oldToken) {
-        uint256 offset = _getImmutableVariablesOffset();
-        assembly {
-            _oldToken := shr(0x60, calldataload(offset))
-        }
+        return ERC20(_getArgAddress(0));
     }
 
     /// @notice The new token that's being migrated to
     /// @return _newToken The new token that's being migrated to
     function newToken() public pure returns (IERC20Migrateable _newToken) {
-        uint256 offset = _getImmutableVariablesOffset();
-        assembly {
-            _newToken := shr(0x60, calldataload(add(offset, 0x14)))
-        }
+        return IERC20Migrateable(_getArgAddress(0x14));
     }
 
     /// @notice The timestamp after which the locked old tokens
@@ -63,10 +59,7 @@ contract TokenMigrator {
     /// @return _unlockTimestamp The timestamp after which the locked old tokens
     /// can be redeemed. Set to 0 if the locked old tokens should never be unlocked.
     function unlockTimestamp() public pure returns (uint64 _unlockTimestamp) {
-        uint256 offset = _getImmutableVariablesOffset();
-        assembly {
-            _unlockTimestamp := shr(0xc0, calldataload(add(offset, 0x28)))
-        }
+        return _getArgUint64(0x28);
     }
 
     /// -----------------------------------------------------------------------
